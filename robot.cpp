@@ -201,7 +201,7 @@ void floor::find_path(){
                 }
                 if(s.top &&battery_now>battery/2){
                     cout<<"tie:;";s.top->pos.show();
-                        
+
                         connect(s.top);
                         battery_now--;
                         if(battery_now==battery/2)
@@ -222,6 +222,7 @@ void floor::find_path(){
                 visited[now]=true;
                 battery_now--;
             pt[now]->pos.show();
+             if(pt[now]->pos.x!=recharge.x||pt[now]->pos.y!=recharge.y)
                 connect(pt[now]);
                 if(pt[now]->pos.x==recharge.x&&pt[now]->pos.y==recharge.y)
                     battery_now=battery;
@@ -232,6 +233,7 @@ void floor::find_path(){
                 visited[now]=true;
                 battery_now--;
             pt[now]->pos.show();
+            if(pt[now]->pos.x!=recharge.x||pt[now]->pos.y!=recharge.y)
                 connect(pt[now]);
                 if(pt[now]->pos.x==recharge.x&&pt[now]->pos.y==recharge.y)
                     battery_now=battery;
@@ -266,14 +268,16 @@ void floor::find_path(){
                     }
 
                 }
-                //s.push(recharge);
-                //visited[5*cols+4]=false;
 
             }
         }
-
+    }
+    if(listback->pos.x!=recharge.x||listback->pos.y!=recharge.y){
+        node* current=new node(recharge.x,recharge.y);
+        connect(current);
 
     }
+
     /*while(!s.isempty()){
         int coord=s.top->pos.x*cols+s.top->pos.y;
 
@@ -324,24 +328,16 @@ void floor::finddest(node* dest,bool* visited,stacks& s){
     while(current->pos.x!=recharge.x||current->pos.y!=recharge.y){
         k.push(current->pos);
         small=findmin(current,visited);
-        if(pt[small]->pos.x!=recharge.x||pt[small]->pos.y!=recharge.y){
-            current=pt[small];
-            visited[current->pos.x*cols+current->pos.y]=true;
-            cout<<"e,.,.,";   current->pos.show();
-            head=new node(current->pos.x,current->pos.y);
-            head->next=tmp;
-            tmp=head;
-            step++;
-        }
-        else{
-            current=pt[small];
-            visited[current->pos.x*cols+current->pos.y]=true;
-            cout<<"e,.,.,";   current->pos.show();
-            head=new node(current->pos.x,current->pos.y);
-            head->next=tmp;
-            tmp=head;
-            step++;
-        }
+        current=pt[small];
+
+        visited[current->pos.x*cols+current->pos.y]=true;
+        cout<<"e,.,.,";   current->pos.show();
+        head=new node(current->pos.x,current->pos.y);
+        head->next=tmp;
+        tmp=head;
+        step++;
+
+
 
     }
     while(!k.isempty()){
