@@ -171,16 +171,16 @@ void floor::find_path(){
         cout<<"hrhhrrhhrhr";un.top->pos.show();
     }*/
 
-        if(battery_now>battery/2){
+        if(battery_now>dist[s.top->pos.x][s.top->pos.y]){
             int coord=s.top->pos.x*cols+s.top->pos.y;
             node* current=pt[coord];
+            tmptop=current;
             if(!visited[coord]){
                 visited[coord]=true;
                 battery_now--;
                 //cout<<"1eaf";current->pos.show();
                 connect(current);
-                if(battery_now==battery/2)
-                    tmptop=current;
+
                 if(pt[coord]->pos.x==recharge.x&&pt[coord]->pos.y==recharge.y)
                     battery_now=battery;
             }
@@ -199,17 +199,16 @@ void floor::find_path(){
                 current=current->next;
             }
             if(allvisit){          //走回去
-                if(!s.isempty()&&battery_now>battery/2){
+                if(!s.isempty()&&battery_now>dist[s.top->pos.x][s.top->pos.y]){
                     s.pop();
                 }
-                if(s.top &&battery_now>battery/2){
+                if(s.top &&battery_now>dist[s.top->pos.x][s.top->pos.y]){
                    // cout<<"tie:;";s.top->pos.show();
 
                         connect(s.top);
                         battery_now--;
-                        if(battery_now==battery/2)
+                        //if(battery_now<=dist[s.top->pos.x][s.top->pos.y])
                             tmptop=pt[s.top->pos.x*cols+s.top->pos.y];
-
                         if(dist[s.top->pos.x][s.top->pos.y]==1){
                             while(!s.isempty()){
                                 if(!visited[s.top->pos.x*cols+s.top->pos.y]){
@@ -226,9 +225,9 @@ void floor::find_path(){
                                  //  cout<<"top"; un.top->pos.show();
                                     visited[un.top->pos.x*cols+un.top->pos.y]=true;
                                     battery_now=battery_now-dist[un.top->pos.x][un.top->pos.y];
-                                    if(battery_now==battery/2){
+                                   // if(battery_now==battery/2){
                                         tmptop=pt[un.top->pos.x*cols+un.top->pos.y];
-                                    }
+                                  //  }
                                     int a=un.top->pos.x;
                                     int b=un.top->pos.y;
                                     un.pop();
@@ -246,7 +245,7 @@ void floor::find_path(){
 
         }
         else{
-            if(battery_now==battery/2){
+            if(battery_now==dist[tmptop->pos.x][tmptop->pos.y]){
                 //int coord=tmptop->pos.x*cols+tmptop->pos.y;
                 node* current=tmptop;
              //   cout<<"now";
