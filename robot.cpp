@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
-#include <cstring>
-#include <time.h>
+//#include <cstring>
+//#include <time.h>
 using namespace std;
 class floor;
 class node;
@@ -14,8 +14,7 @@ class point{
         friend stacks;
         friend queues;
         void set(int a,int b){
-            x=a;
-            y=b;
+            x=a;y=b;
         }
         void show(){
             cout<<x<<" "<<y<<endl;
@@ -47,6 +46,7 @@ class queues{
             front=NULL;
             back=NULL;
         }
+        ~queues(){}
         void push(point);
         void pop();
         bool isempty();
@@ -84,6 +84,7 @@ class stacks{
            size=0;
            top=NULL;
         }
+        ~stacks(){};
         bool isempty();
         point Top();
         void push(point);
@@ -91,9 +92,7 @@ class stacks{
     private:
         node* top;
         int size;
-
 };
-
 bool stacks::isempty(){
     return (size==0);
 }
@@ -114,7 +113,6 @@ void stacks::push(point x){
 }
 void stacks::pop(){
     if(isempty())return;
-
     node* tmp=top;
     top=top->next;
     delete tmp;
@@ -148,29 +146,21 @@ class floor{
         node* answerlist;
         node* listback;
         int step;
-
 };
 void floor::find_path(){
     stacks s;
     stacks un;
     bool* visited=new bool[rows*cols];
     int battery_now=battery;
-
     for(int i=0;i<rows*cols;i++){
         visited[i]=false;
     }
     s.push(recharge);
     answerlist=new node(recharge.x,recharge.y);
     listback=answerlist;
-
-
     while (!s.isempty()){
         node* second;
         node* tmptop;
-  /*  if(!un.isempty()){
-        cout<<"hrhhrrhhrhr";un.top->pos.show();
-    }*/
-
         if(battery_now>dist[s.top->pos.x][s.top->pos.y]){
             int coord=s.top->pos.x*cols+s.top->pos.y;
             node* current=pt[coord];
@@ -178,9 +168,7 @@ void floor::find_path(){
             if(!visited[coord]){
                 visited[coord]=true;
                 battery_now--;
-                //cout<<"1eaf";current->pos.show();
                 connect(current);
-
                 if(pt[coord]->pos.x==recharge.x&&pt[coord]->pos.y==recharge.y)
                     battery_now=battery;
             }
@@ -203,53 +191,37 @@ void floor::find_path(){
                     s.pop();
                 }
                 if(s.top &&battery_now>dist[s.top->pos.x][s.top->pos.y]){
-                   // cout<<"tie:;";s.top->pos.show();
-
-                        connect(s.top);
-                        battery_now--;
-                        //if(battery_now<=dist[s.top->pos.x][s.top->pos.y])
-                            tmptop=pt[s.top->pos.x*cols+s.top->pos.y];
-                        if(dist[s.top->pos.x][s.top->pos.y]==1){
-                            while(!s.isempty()){
-                                if(!visited[s.top->pos.x*cols+s.top->pos.y]){
-                                    //cout<<"gegegeg"; s.top->pos.show();
-                                    un.push(s.top->pos);
-                                }
-                                s.pop();
+                    connect(s.top);
+                    battery_now--;
+                        tmptop=pt[s.top->pos.x*cols+s.top->pos.y];
+                    if(dist[s.top->pos.x][s.top->pos.y]==1){
+                        while(!s.isempty()){
+                            if(!visited[s.top->pos.x*cols+s.top->pos.y]){
+                                un.push(s.top->pos);
                             }
-                           // cout<<"k";
-                            while(!un.isempty()){
-                                if(!visited[un.top->pos.x*cols+un.top->pos.y]){
-                                    battery_now=battery;
-                                  //   cout<<"eih";
-                                 //  cout<<"top"; un.top->pos.show();
-                                    visited[un.top->pos.x*cols+un.top->pos.y]=true;
-                                    battery_now=battery_now-dist[un.top->pos.x][un.top->pos.y];
-                                   // if(battery_now==battery/2){
-                                        tmptop=pt[un.top->pos.x*cols+un.top->pos.y];
-                                  //  }
-                                    int a=un.top->pos.x;
-                                    int b=un.top->pos.y;
-                                    un.pop();
-                                    finddest(a,b,visited,s,un);
-                                 //   cout<<"eih";
-                                    break;
-                                }
-                                else un.pop();
-                            }
+                            s.pop();
                         }
-
-
+                        while(!un.isempty()){
+                            if(!visited[un.top->pos.x*cols+un.top->pos.y]){
+                                battery_now=battery;
+                                visited[un.top->pos.x*cols+un.top->pos.y]=true;
+                                battery_now=battery_now-dist[un.top->pos.x][un.top->pos.y];
+                                tmptop=pt[un.top->pos.x*cols+un.top->pos.y];
+                                int a=un.top->pos.x;
+                                int b=un.top->pos.y;
+                                un.pop();
+                                finddest(a,b,visited,s,un);
+                                break;
+                            }
+                            else un.pop();
+                        }
+                    }
                 }
             }
-
         }
         else{
             if(battery_now==dist[tmptop->pos.x][tmptop->pos.y]){
-                //int coord=tmptop->pos.x*cols+tmptop->pos.y;
                 node* current=tmptop;
-             //   cout<<"now";
-          //  cout<<"efefeEeefe";tmptop->pos.show();
                 int now=findmin(current,visited);
                 visited[now]=true;
                 node* tmp=pt[now];
@@ -260,7 +232,6 @@ void floor::find_path(){
                     tmp=tmp->next;
                 }
                 battery_now--;
-            //pt[now]->pos.show();
                 if(pt[now]->pos.x!=recharge.x||pt[now]->pos.y!=recharge.y)
                     connect(pt[now]);
                 if(pt[now]->pos.x==recharge.x&&pt[now]->pos.y==recharge.y)
@@ -278,7 +249,6 @@ void floor::find_path(){
                     tmp=tmp->next;
                 }
                 battery_now--;
-            //pt[now]->pos.show();
                 if(pt[now]->pos.x!=recharge.x||pt[now]->pos.y!=recharge.y)
                     connect(pt[now]);
                 if(pt[now]->pos.x==recharge.x&&pt[now]->pos.y==recharge.y)
@@ -288,18 +258,13 @@ void floor::find_path(){
             if(second->pos.x==recharge.x &&second->pos.y==recharge.y){
                 battery_now=battery;
                 while(!s.isempty()){
-                    if(!visited[s.top->pos.x*cols+s.top->pos.y]){                   //每個點都該進行深度 ..
-                       // cout<<"gegegeg"; s.top->pos.show();
+                    if(!visited[s.top->pos.x*cols+s.top->pos.y]){                   
                         un.push(s.top->pos);
                     }
-
                     s.pop();
                 }
                 while(!un.isempty()){
                     if(!visited[un.top->pos.x*cols+un.top->pos.y]){
-                   //      cout<<"eih";
-                  //     cout<<"top"; un.top->pos.show();
-
                         visited[un.top->pos.x*cols+un.top->pos.y]=true;
                         battery_now=battery_now-dist[un.top->pos.x][un.top->pos.y];
                         if(battery_now==battery/2){
@@ -309,59 +274,31 @@ void floor::find_path(){
                         int b=un.top->pos.y;
                         un.pop();
                         finddest(a,b,visited,s,un);
-
-                   //     cout<<"efea";un.top->pos.show();
-
-                     //   cout<<"eih";
-
                         break;
                     }
                     else{
                         un.pop();
                     }
-
                 }
-
             }
         }
     }
-
     if(listback->pos.x!=recharge.x||listback->pos.y!=recharge.y){
         node* current=new node(recharge.x,recharge.y);
         connect(current);
-
     }
-
-    /*while(!s.isempty()){
-        int coord=s.top->pos.x*cols+s.top->pos.y;
-        node* current=pt[coord];
-        s.pop();
-        if(!visited[coord]){
-            visited[coord]=true;
-            current->pos.show();
-        }
-        int allvisit=0;
-        while(current){
-            if(!visited[current->pos.x*cols+current->pos.y]){
-                s.push(current->pos);
-                allvisit=1;
-                //current->pos.show();
-            }
-            current=current->next;
-        }
-    }*/
-
 }
 void floor::outfile(){
     ofstream fout;
     fout.open("final.path",ios::out);
     node* tmp=answerlist->next;
-
     fout<<step-1<<endl;
-
     while(tmp){
+        node* todel=tmp;
         fout<<tmp->pos.x<<" "<<tmp->pos.y<<endl;
         tmp=tmp->next;
+        delete todel;
+        todel=NULL;
     }
     fout.close();
 }
@@ -371,17 +308,6 @@ void floor::connect(node* x){
     listback=tmp;
     step++;
 }
-void floor::showlist(){
-    cout<<step<<endl;
-    node* tmp=answerlist->next;
-    int s=0;
-    while(tmp){
-        tmp->pos.show();
-        s++;
-        tmp=tmp->next;
-    }
-    cout<<s<<endl;
-}
 void floor::finddest(int a,int b,bool* visited,stacks& s,stacks& un){
     int small;
     node* current=pt[a*cols+b];
@@ -389,13 +315,11 @@ void floor::finddest(int a,int b,bool* visited,stacks& s,stacks& un){
     node* last=tmp;
     node* head;
     stacks k;
-    //cout<<"efew";dest->pos.show();
     while(current->pos.x!=recharge.x||current->pos.y!=recharge.y){
         k.push(current->pos);
         small=findmin(current,visited);
         current=pt[small];
         visited[current->pos.x*cols+current->pos.y]=true;
-      //  cout<<"e,.,.,";   current->pos.show();
         head=new node(current->pos.x,current->pos.y);
         head->next=tmp;
         tmp=head;
@@ -403,7 +327,6 @@ void floor::finddest(int a,int b,bool* visited,stacks& s,stacks& un){
     }
     while(!k.isempty()){
         s.push(k.top->pos);
-        //cout<<"s.top";s.top->pos.show();
         node* tmp=pt[k.top->pos.x*cols+k.top->pos.y];
         while(tmp){
             if(!visited[tmp->pos.x*cols+tmp->pos.y]){
@@ -416,21 +339,16 @@ void floor::finddest(int a,int b,bool* visited,stacks& s,stacks& un){
     listback->next=head;
     listback=last;
     step++;
-
 }
 int floor::findmin(node* current,bool* visited){
     node* tmp=current->next;
-
     int dis=dist[tmp->pos.x][tmp->pos.y];
     int small=tmp->pos.x*cols+tmp->pos.y;
     while(tmp){
         if(dis>dist[tmp->pos.x][tmp->pos.y]){
-
             dis=dist[tmp->pos.x][tmp->pos.y];
             small=tmp->pos.x*cols+tmp->pos.y;
-            //cout<<"whilar";tmp->pos.show();
             if(!visited[tmp->pos.x*cols+tmp->pos.y]){
-
                 break;
             }
         }
@@ -440,7 +358,6 @@ int floor::findmin(node* current,bool* visited){
 }
 void floor::BFS(){
     queues q;
-
     bool* visited=new bool[rows*cols];
     for(int i=0;i<rows*cols;i++){
         visited[i]=false;
@@ -455,10 +372,7 @@ void floor::BFS(){
     }
     dist[recharge.x][recharge.y]=0;
     q.push(recharge);
-
-
     while(!q.isempty()){
-        //q.front->pos.show();
         int coord=q.front->pos.x*cols+q.front->pos.y;
         node* current=pt[coord];
         node* u=pt[coord];
@@ -466,7 +380,6 @@ void floor::BFS(){
             visited[coord]=true;
         }
         q.pop();
-       // cout<<q.isempty();
         while(current){
             if(!visited[current->pos.x*cols+current->pos.y]){
                 visited[current->pos.x*cols+current->pos.y]=true;
@@ -476,23 +389,8 @@ void floor::BFS(){
             current=current->next;
         }
     }
-
-    ofstream fBFS;
-    fBFS.open("bfs.txt",ios::out);
-
-    for(int i=0;i<rows;i++){
-        for(int j=0;j<cols;j++){
-            if(dist[i][j]==-1)
-                fBFS<<"   ";
-            else
-                fBFS<<dist[i][j]<<"  ";
-        }
-        fBFS<<endl;
-    }
-    fBFS.close();
 }
 void floor::set_list(){
-
     pt=new node*[rows*cols];
     for(int i=0;i<rows;i++){
         for(int j=0;j<cols;j++)
@@ -554,27 +452,11 @@ void floor::set_list(){
                 pt[i*cols+j]=NULL;
             }
         }
-
     }
-
-  /* for(int i=0;i<rows;i++){
-        for(int j=0;j<cols;j++){
-            if(pt[i*cols+j]){
-                node* temp=pt[i*cols+j];
-                while(temp){
-                    cout<<temp->pos.x<<" "<<temp->pos.y<<",";
-                    temp=temp->next;
-                }
-                cout<<endl;
-            }
-        }
-    }
-*/
 }
 void floor::read_file(){
     ifstream fin("floor.data");
     fin>>rows>>cols>>battery;
-
     map=new char*[rows];
     for(int i=0;i<rows;i++){
         map[i]=new char [cols];
@@ -584,11 +466,6 @@ void floor::read_file(){
             fin>>map[i][j];
         }
     }
-    /*for(int i=0;i<rows;i++){
-        for(int j=0;j<cols;j++){
-            cout<<map[i][j];
-        }cout<<endl;
-    }*/
     fin.close();
 }
 int main(){
@@ -597,10 +474,7 @@ int main(){
     f.set_list();
     f.BFS();
     f.find_path();
-//cout<<"lalalla"<<endl;
-    //f.showlist();
     f.outfile();
-cout << (double)clock() / CLOCKS_PER_SEC << "S"<<endl;
-//cout<<endl;
+    //cout <<(double)clock()/CLOCKS_PER_SEC << " S" ;
     return 0;
 }
