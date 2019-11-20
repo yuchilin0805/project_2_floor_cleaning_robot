@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 //#include <cstring>
-#include <time.h>
+//#include <time.h>
 using namespace std;
 class floor;
 class node;
@@ -368,7 +368,7 @@ void floor::BFS(){
             current=current->next;
         }
     }
-   ofstream fBFS;
+   /*ofstream fBFS;
     fBFS.open("bfs.txt",ios::out);
 
     for(int i=0;i<rows;i++){
@@ -380,7 +380,7 @@ void floor::BFS(){
         }
         fBFS<<endl;
     }
-    fBFS.close();
+    fBFS.close();*/
 }
 void floor::set_list(){
     pt=new node*[rows*cols];
@@ -467,6 +467,6 @@ int main(){
     f.BFS();
     f.find_path();
     f.outfile();
-    cout <<(double)clock()/CLOCKS_PER_SEC << " S" ;
+    //cout <<(double)clock()/CLOCKS_PER_SEC << " S" ;
     return 0;
 }
